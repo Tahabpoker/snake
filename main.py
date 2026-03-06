@@ -24,13 +24,15 @@ black = pygame.Color(0,0,0)
 white = pygame.Color(255,255,255)
 red = pygame.Color(255,0,0)
 green = pygame.Color(0,255,0)
+blue = pygame.Color(0,0,255)
 
 fps_controller = pygame.time.Clock()
 
-# one snake body or one snake pixel
+# one snake body block
 square_size = 20
 
 game_state = "START"
+snake_dead = False
 
 
 def start_screen():
@@ -40,8 +42,7 @@ def start_screen():
     title_font = pygame.font.SysFont("consolas",50)
     text_font = pygame.font.SysFont("consolas",20)
 
-    # title text
-    title = title_font.render("SNAKE GAME",True,green)
+    title = title_font.render("Snake Game",True,green)
     text = text_font.render("Press SPACE to Start",True,white)
 
     game_window.blit(title,title.get_rect(center=(frame_size_x/2,frame_size_y/3)))
@@ -52,7 +53,11 @@ def start_screen():
 
 def game_over_screen():
 
-    game_window.fill(black)
+    # dark overlay
+    overlay = pygame.Surface((frame_size_x,frame_size_y))
+    overlay.set_alpha(150)
+    overlay.fill((0,0,0))
+    game_window.blit(overlay,(0,0))
 
     font_big = pygame.font.SysFont("consolas",50)
     font_small = pygame.font.SysFont("consolas",20)
@@ -60,7 +65,6 @@ def game_over_screen():
     over = font_big.render("GAME OVER",True,red)
     score_text = font_small.render("Score : "+str(score),True,white)
 
-    # restart info
     restart = font_small.render("Press R to Restart | Q to Quit",True,white)
 
     game_window.blit(over,over.get_rect(center=(frame_size_x/2,frame_size_y/3)))
@@ -72,7 +76,8 @@ def game_over_screen():
 
 def init_vars():
 
-    global head_pos, snake_body, food_pos, food_spawn, score, direction, speed
+    global head_pos, snake_body, food_pos, food_spawn
+    global score, direction, speed, snake_dead
 
     direction = "RIGHT"
 
@@ -87,13 +92,14 @@ def init_vars():
 
     score = 0
     speed = 10
+    snake_dead = False
 
     food_spawn = True
 
     spawn_food()
 
 
-# spawn food not inside snake
+# spawn food not on snake
 def spawn_food():
 
     global food_pos
@@ -151,7 +157,7 @@ while True:
         continue
 
 
-    # end screen
+    # game over screen
     if game_state == "GAME_OVER":
 
         game_over_screen()
@@ -225,7 +231,7 @@ while True:
 
         score += 1
 
-        # increase speed
+        # speed increase
         speed += score*0.1 if score < 10 else 0
 
         food_spawn = False
@@ -245,11 +251,13 @@ while True:
     # gfx
     game_window.fill(black)
 
+    snake_color = blue if snake_dead else green
+
     for pos in snake_body:
 
         pygame.draw.rect(
             game_window,
-            green,
+            snake_color,
             pygame.Rect(
                 pos[0]+2,
                 pos[1]+2,
@@ -275,6 +283,7 @@ while True:
 
         if head_pos == block:
 
+            snake_dead = True
             game_state = "GAME_OVER"
 
 
