@@ -1,6 +1,6 @@
 # Snake Game 
 
-got bored made snake
+got bored made game
 
 ## Requirements
 
