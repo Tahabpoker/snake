@@ -1,8 +1,6 @@
 # Snake Game 
 
-A small snake game made with Python and pygame.
-
-Honestly made this at 3 in the morning because I couldn't sleep
+got bored made snake
 
 ## Requirements
 
